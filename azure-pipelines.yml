@@ -1,0 +1,23 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Login to Azure'
+  inputs:
+    azureSubscription: '<Your Azure Subscription Name>'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az login --service-principal -u "$env:AZURE_CLIENT_ID" -p "$env:AZURE_CLIENT_SECRET" --tenant "$env:AZURE_TENANT_ID"
+
+- task: AzureWebApp@1
+  displayName: 'Azure Web App Deploy: sitecore-agents-cd'
+  inputs:
+    azureSubscription: '<Your Azure Subscription Name>'
+    appName: 'sitecore-agents-cd'
+    resourceGroupName: 'sitecore-agents'
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
