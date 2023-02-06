@@ -1,0 +1,16 @@
+[13:13] Sachin Shakya
+$tmProfile = Get-AzTrafficManagerProfile -Name "sitecoretrafficmanager" # Get the list of endpoints for the profile
+$endpoints = Get-AzTrafficManagerEndpoint -ProfileName $tmProfile.Name #Loop through the endpoints to check the status
+Foreach ($endpoint in $endpoints)
+{
+    #Check the endpoint status
+    If($endpoint.EndpointStatus -eq "Enabled")
+    {
+        $status = Get-AzTrafficManagerEndpointStatus -Location $endpoint.Location -ProfileName $tmProfile.Name
+        If($status.Performance -ne "Online")
+        {
+            Write-Host "The App Service $($endpoint.Name) is down in Traffic Manager $($tmProfile.Name)"
+        }
+    }
+}
+
