@@ -1,0 +1,11 @@
+# Get the secondary database
+$secondary = Get-AzureRmSqlDatabase -ResourceGroupName <sitecore-agents1> -ServerName <server-name> -DatabaseName $BlueDb
+
+# Stop any ongoing replication
+Stop-AzureRmSqlDatabaseFailoverGroup -ResourceGroupName <resource-group-name> -ServerName <server-name> -FailoverGroupName <failover-group-name>
+
+# Set the secondary database as the new primary database
+Set-AzureRmSqlDatabase -ResourceGroupName <sitecore-agents> -ServerName <server-name> -DatabaseName $BlueDb -ReadOnlyRouteData $primary.ReadOnlyRouteData
+
+# Set the old primary database as secondary and read-only
+Set-AzureRmSqlDatabase -ResourceGroupName <sitecore-agents1> -ServerName <server-name> -DatabaseName $GreenDb -ReadOnlyRouteData $secondary.ReadOnlyRouteData -ReadOnly
