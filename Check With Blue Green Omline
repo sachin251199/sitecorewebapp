@@ -1,0 +1,4 @@
+$TrafficManager = Get-AzTrafficManagerProfile
+
+#Switch to Priority Based Traffic Routing
+Set-AzTrafficManagerProfile -Name $TrafficManager.Name -RoutingMethod Priority -ResourceGroupName $TrafficManager.ResourceGroupName
